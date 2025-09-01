@@ -31,6 +31,7 @@ default['backup']['dependencies'] = []
 default['backup']['version'] = '4.0.2'
 default['backup']['version_from_git?'] = false
 default['backup']['git_repo'] = nil
+default['backup']['git_repo_revision'] = 'master'
 default['backup']['upgrade?'] = false
 
 default['backup']['server'] = {}

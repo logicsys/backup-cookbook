@@ -21,7 +21,7 @@ if node['backup']['version_from_git?']
   include_recipe 'gem_specific_install'
   gem_specific_install 'backup' do
     repository node['backup']['git_repo']
-    revision 'master'
+    revision node['backup']['git_repo_revision']
     action :install
   end
 else

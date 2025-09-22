@@ -19,7 +19,7 @@
 
 if node['backup']['use_rvm']
   ruby_string = node['backup']['rvm_ruby_string'] || 'ruby-3.1.0'
-  
+
   # Install development packages required for building Ruby
   case node['platform_family']
   when 'rhel', 'fedora'
@@ -27,7 +27,7 @@ if node['backup']['use_rvm']
     package 'epel-release' do
       action :install
     end
-    
+
     # Enable CodeReady/PowerTools/CRB repository for RHEL 8+
     if node['platform_version'].to_i >= 8
       case node['platform']
@@ -63,10 +63,10 @@ if node['backup']['use_rvm']
         end
       end
     end
-    
+
     # Install packages - libyaml-devel is in RHEL 8 but not RHEL 9 (use libyaml instead)
     base_packages = %w[gcc gcc-c++ make patch openssl-devel zlib-devel libffi-devel readline-devel sqlite-devel bzip2 autoconf automake libtool bison json-devel]
-    
+
     bash 'install epel-release && refresh cache' do
       code 'yum install -y epel-release && yum makecache'
     end
@@ -79,7 +79,7 @@ if node['backup']['use_rvm']
       action :install
     end
   end
-  
+
   # Install RVM if not already installed
   bash 'install_rvm' do
     code <<-EOH
@@ -90,7 +90,7 @@ if node['backup']['use_rvm']
     EOH
     not_if 'command -v rvm'
   end
-  
+
   # Source RVM and install Ruby
   bash "install_ruby_#{ruby_string}" do
     code <<-EOH
@@ -107,18 +107,18 @@ if node['backup']['use_rvm']
       code <<-EOH
         source /etc/profile.d/rvm.sh
         rvm use #{ruby_string}
-        
+
         # Clone the repo and build gem directly
         temp_dir=$(mktemp -d)
         cd $temp_dir
         git clone #{node['backup']['git_repo']} backup_repo
         cd backup_repo
         git checkout #{node['backup']['git_repo_revision']}
-        
+
         # Build and install the gem
         gem build *.gemspec
         gem install *.gem
-        
+
         # Clean up
         cd /
         rm -rf $temp_dir
@@ -130,7 +130,7 @@ if node['backup']['use_rvm']
       code <<-EOH
         source /etc/profile.d/rvm.sh
         rvm use #{ruby_string}
-        #{node['backup']['version'] ? "gem install backup -v '#{node['backup']['version']}'" : "gem install backup"}
+        #{node['backup']['version'] ? "gem install backup -v '#{node['backup']['version']}'" : 'gem install backup'}
       EOH
       unless node['backup']['upgrade?']
         not_if "bash -l -c 'rvm use #{ruby_string} && gem list backup | grep -q backup'"
@@ -152,19 +152,19 @@ else
   if node['backup']['version_from_git?']
     # Install git if needed
     package 'git'
-    
+
     # For non-RVM systems, we need gem_specific_install cookbook
     # Check if it's available before using it
     begin
       include_recipe 'gem_specific_install'
-      
+
       gem_specific_install 'backup' do
         repository node['backup']['git_repo']
         revision node['backup']['git_repo_revision']
         action :install
       end
     rescue Chef::Exceptions::CookbookNotFound
-      Chef::Log.warn("gem_specific_install cookbook not found. Installing backup gem from git requires this cookbook for non-RVM systems.")
+      Chef::Log.warn('gem_specific_install cookbook not found. Installing backup gem from git requires this cookbook for non-RVM systems.')
       raise
     end
   else

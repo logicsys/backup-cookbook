@@ -15,14 +15,14 @@ action :create do
   elsif new_resource.date == :today
     cron_trigger += '-$( date +\\%F )'
   elsif !new_resource.date.nil?
-    raise "Invalid date: '#{new_resource.date.to_s}' - valid :today or :yesterday"
+    raise "Invalid date: '#{new_resource.date}' - valid :today or :yesterday"
   end
 
-  if node['backup']['use_rvm'] == true
-    backup_cmd_path = "/usr/local/rvm/wrappers/ruby-3.3.9/backup"
-  else
-    backup_cmd_path = "backup"
-  end
+  backup_cmd_path = if node['backup']['use_rvm'] == true
+                      '/usr/local/rvm/wrappers/ruby-3.3.9/backup'
+                    else
+                      'backup'
+                    end
 
   cron_d cron_name do
     command cron_options[:command] ||

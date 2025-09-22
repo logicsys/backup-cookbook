@@ -80,7 +80,7 @@ Vagrant.configure('2') do |config|
     }
 
     chef.run_list = [
-        'recipe[backup-cookbook::default]',
+      'recipe[backup-cookbook::default]',
     ]
   end
 end

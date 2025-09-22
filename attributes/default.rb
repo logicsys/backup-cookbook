@@ -46,16 +46,15 @@ when 'rhel', 'fedora'
     default['backup']['use_rvm'] = true
     default['backup']['rvm_ruby_string'] = 'ruby-3.3.9'
     default['backup']['version'] = '5.0.0'
-	
-	default['backup']['version_from_git?'] = true
-	default['backup']['git_repo'] = "https://github.com/logicsys/backup"
-	# default['backup']['git_repo'] = "https://gitlab.yakara.com/yakara-platform/backup_gem.git"
-	default['backup']['git_repo_revision'] = 'yakara'
+
+    default['backup']['version_from_git?'] = true
+    default['backup']['git_repo'] = 'https://github.com/logicsys/backup'
+    # default['backup']['git_repo'] = "https://gitlab.yakara.com/yakara-platform/backup_gem.git"
+    default['backup']['git_repo_revision'] = 'yakara'
   end
 
   if node['platform_version'].to_f.to_i >= 10
-  	default['backup']['rvm_ruby_string'] = 'ruby-3.4.6'
+    default['backup']['rvm_ruby_string'] = 'ruby-3.4.6'
   end
 
 end
-

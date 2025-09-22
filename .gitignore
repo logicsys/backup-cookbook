@@ -12,3 +12,4 @@ Berksfile.lock
 bin/*
 .bundle/*
 
+.kitchen/

@@ -28,10 +28,34 @@ default['backup']['user']         = 'root'
 default['backup']['group']        = 'root'
 
 default['backup']['dependencies'] = []
-default['backup']['version'] = '4.0.2'
+default['backup']['version'] = '5.0.0'
 default['backup']['version_from_git?'] = false
 default['backup']['git_repo'] = nil
 default['backup']['git_repo_revision'] = 'master'
 default['backup']['upgrade?'] = false
 
 default['backup']['server'] = {}
+
+default['backup']['use_rvm'] = false
+default['backup']['rvm_ruby_string'] = 'default'
+
+# Platform-specific defaults for RHEL 9+
+case node['platform_family']
+when 'rhel', 'fedora'
+  if node['platform_version'].to_f.to_i >= 9
+    default['backup']['use_rvm'] = true
+    default['backup']['rvm_ruby_string'] = 'ruby-3.3.9'
+    default['backup']['version'] = '5.0.0'
+	
+	default['backup']['version_from_git?'] = true
+	default['backup']['git_repo'] = "https://github.com/logicsys/backup"
+	# default['backup']['git_repo'] = "https://gitlab.yakara.com/yakara-platform/backup_gem.git"
+	default['backup']['git_repo_revision'] = 'yakara'
+  end
+
+  if node['platform_version'].to_f.to_i >= 10
+  	default['backup']['rvm_ruby_string'] = 'ruby-3.4.6'
+  end
+
+end
+

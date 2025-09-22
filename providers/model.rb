@@ -18,9 +18,15 @@ action :create do
     raise "Invalid date: '#{new_resource.date.to_s}' - valid :today or :yesterday"
   end
 
+  if node['backup']['use_rvm'] == true
+    backup_cmd_path = "/usr/local/rvm/wrappers/ruby-3.3.9/backup"
+  else
+    backup_cmd_path = "backup"
+  end
+
   cron_d cron_name do
     command cron_options[:command] ||
-            "cd /tmp/ ; backup perform --trigger #{cron_trigger} \
+            "cd /tmp/ ; backup_cmd_path perform --trigger #{cron_trigger} \
             --config-file #{node['backup']['config_path']}/config.rb \
             --log-path=#{node['backup']['log_path']} #{node['backup']['addl_flags']} \
             #{cron_output_redirect}".squeeze(' ')
